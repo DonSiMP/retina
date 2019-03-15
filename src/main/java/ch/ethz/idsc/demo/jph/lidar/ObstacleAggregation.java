@@ -36,7 +36,7 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
-/* package */ class ObstacleAggregation implements OfflineLogListener, LidarSpacialListener {
+/* package */ class ObstacleAggregation implements OfflineLogListener, LidarSpacialListener<LidarXYZEvent> {
   private static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.getPredefinedMap();
   private static final Tensor MODEL2PIXEL = PREDEFINED_MAP.getModel2Pixel();
   private static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();

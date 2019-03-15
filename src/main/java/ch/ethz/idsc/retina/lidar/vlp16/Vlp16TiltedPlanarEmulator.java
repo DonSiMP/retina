@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.app.VelodyneRay;
 
 /** extracts points at horizontal level, for arbitrary inclination of Velodyne VLP-16 */
-public class Vlp16TiltedPlanarEmulator extends VelodyneSpacialProvider {
+public class Vlp16TiltedPlanarEmulator extends VelodyneSpacialProvider<LidarXYZEvent> {
   private final Vlp16RayLookup vlp16RayLookup;
 
   /** @param bits: 0 no loss of precision, 1 half angular precision, ...

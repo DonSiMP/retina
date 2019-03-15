@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** export sensor data that are subject to resonance frequency of sensor rack
  * 
  * https://github.com/idsc-frazzoli/retina/files/2131149/20180624_vibration_sensor_rack.pdf */
-/* package */ class SensorRackVibration implements LidarSpacialListener, DavisDvsListener, OfflineLogListener {
+/* package */ class SensorRackVibration implements LidarSpacialListener<LidarXYZEvent>, DavisDvsListener, OfflineLogListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private static final String CHANNEL_DAVIS_IMU = //

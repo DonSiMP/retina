@@ -4,19 +4,19 @@ package ch.ethz.idsc.retina.lidar;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class VelodyneSpacialProvider implements LidarSpacialProvider {
+public abstract class VelodyneSpacialProvider <T extends LidarSpacialEvent> implements LidarSpacialProvider<T> {
   /** initial value of limit lo has interpretation as distance in meters
    * by multiplication with the factor VelodyneStatics.TO_METER == 0.002
    * 
    * <p>Therefore, a value of 10 corresponds to a distance of 0.02[m] */
   public static final int INITIAL_LIMIT_LO = 10;
   // ---
-  protected final List<LidarSpacialListener> listeners = new LinkedList<>();
+  protected final List<LidarSpacialListener<T>> listeners = new LinkedList<>();
   protected int usec;
   protected int limit_lo = INITIAL_LIMIT_LO;
 
   @Override // from LidarSpacialProvider
-  public final void addListener(LidarSpacialListener lidarSpacialListener) {
+  public final void addListener(LidarSpacialListener<T> lidarSpacialListener) {
     listeners.add(lidarSpacialListener);
   }
 

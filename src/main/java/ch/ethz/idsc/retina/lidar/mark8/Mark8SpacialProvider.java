@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
-public class Mark8SpacialProvider implements LidarSpacialProvider {
+public class Mark8SpacialProvider implements LidarSpacialProvider<LidarXYZEvent> {
   private static final int LASERS = 8;
   private static final float[] IR = new float[8];
   private static final float[] IZ = new float[8];
@@ -23,7 +23,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
       -0.318505, -0.2692, -0.218009, -0.165195, -0.111003, -0.0557982, 0.0, 0.0557982 };
   private static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(10400, false, 0);
   // ---
-  private final List<LidarSpacialListener> listeners = new LinkedList<>();
+  private final List<LidarSpacialListener<LidarXYZEvent>> listeners = new LinkedList<>();
   private int usec;
   // private final byte[] intensity = new byte[24];
   private int returns;
@@ -37,7 +37,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   }
 
   @Override
-  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
+  public void addListener(LidarSpacialListener<LidarXYZEvent> lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
 

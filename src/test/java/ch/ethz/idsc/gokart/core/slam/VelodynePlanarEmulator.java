@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 /** CLASS IS NOT IN USE ANYMORE, INSTEAD USE TiltedVelodynePlanarEmulator
  * 
  * extracts points at horizontal level for velodyne */
-/* package */ class VelodynePlanarEmulator implements LidarSpacialProvider {
+/* package */ class VelodynePlanarEmulator implements LidarSpacialProvider<LidarXYZEvent> {
   public static VelodynePlanarEmulator hdl32e(double angle_offset) {
     return new VelodynePlanarEmulator(angle_offset, 15); // index of horizontal beam == 15
   }
@@ -32,7 +32,7 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
   }
   // ---
 
-  private final List<LidarSpacialListener> listeners = new LinkedList<>();
+  private final List<LidarSpacialListener<LidarXYZEvent>> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = VelodyneSpacialProvider.INITIAL_LIMIT_LO;
   private int usec;
   private final AngleVectorLookupFloat lookup;
@@ -45,7 +45,7 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
   }
 
   @Override // from LidarSpacialProvider
-  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
+  public void addListener(LidarSpacialListener<LidarXYZEvent> lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
 

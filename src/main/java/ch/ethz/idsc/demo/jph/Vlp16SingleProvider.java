@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 
 /** used in {@link SensorRackVibration} */
-/* package */ class Vlp16SingleProvider extends VelodyneSpacialProvider {
+/* package */ class Vlp16SingleProvider extends VelodyneSpacialProvider<LidarXYZEvent> {
   private final int position_laser;
 
   /** @param angle_offset

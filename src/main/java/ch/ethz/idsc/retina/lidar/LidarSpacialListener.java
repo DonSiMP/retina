@@ -1,7 +1,7 @@
-// code by jph
+// code by jph, gjoel
 package ch.ethz.idsc.retina.lidar;
 
 @FunctionalInterface
-public interface LidarSpacialListener {
-  void lidarSpacial(LidarXYZEvent lidarXYZEvent);
+public interface LidarSpacialListener <T extends LidarSpacialEvent> {
+  void lidarSpacial(T lidarSpacialEvent);
 }

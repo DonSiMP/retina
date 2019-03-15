@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/* package */ class ProximityAnalysis implements LidarSpacialListener, OfflineTableSupplier {
+/* package */ class ProximityAnalysis implements LidarSpacialListener<LidarXYZEvent>, OfflineTableSupplier {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private static final Scalar PARTITION = RealScalar.of(20);

@@ -12,7 +12,7 @@ import ch.ethz.idsc.owl.data.GlobalAssert;
  * of 3d, or 2d points
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
-public class LidarAngularFiringCollector implements LidarSpacialListener, LidarRotationListener {
+public class LidarAngularFiringCollector implements LidarSpacialListener<LidarXYZEvent>, LidarRotationListener {
   private final FloatBuffer floatBuffer;
   private final ByteBuffer byteBuffer;
   private final int limit;

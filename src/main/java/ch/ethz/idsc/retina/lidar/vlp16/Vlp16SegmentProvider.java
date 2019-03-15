@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** converts firing data to spatial events with time, 3d-coordinates and
  * intensity. Only rays with an altitude angle of <= max_alt [deg] are processed. */
-public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
+public class Vlp16SegmentProvider extends VelodyneSpacialProvider<LidarXYZEvent> {
   private final List<Integer> laserList = new ArrayList<>();
   private final int NUM_LASERS;
   //  ---

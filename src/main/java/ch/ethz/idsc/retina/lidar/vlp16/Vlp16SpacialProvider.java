@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** converts firing data to spacial events with time, 3d-coordinates and
  * intensity */
-public class Vlp16SpacialProvider extends VelodyneSpacialProvider {
+public class Vlp16SpacialProvider extends VelodyneSpacialProvider<LidarXYZEvent> {
   private static final int LASERS = 16;
   // ---
   private final AngleVectorLookupFloat lookup;

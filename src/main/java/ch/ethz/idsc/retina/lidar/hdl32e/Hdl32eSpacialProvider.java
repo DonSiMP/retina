@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
  * intensity
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
-public class Hdl32eSpacialProvider extends VelodyneSpacialProvider {
+public class Hdl32eSpacialProvider extends VelodyneSpacialProvider<LidarXYZEvent> {
   public static final AngleVectorLookupFloat TRIGONOMETRY = //
       new AngleVectorLookupFloat(VelodyneStatics.AZIMUTH_RESOLUTION, true, 0);
   // ---

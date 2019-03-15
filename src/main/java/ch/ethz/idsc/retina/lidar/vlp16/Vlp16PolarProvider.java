@@ -2,12 +2,12 @@
 package ch.ethz.idsc.retina.lidar.vlp16;
 
 import ch.ethz.idsc.retina.lidar.LidarPolarEvent;
-import ch.ethz.idsc.retina.lidar.VelodynePolarProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 
 import java.nio.ByteBuffer;
 
-public class Vlp16PolarProvider extends VelodynePolarProvider {
+public class Vlp16PolarProvider extends VelodyneSpacialProvider<LidarPolarEvent> {
   private static final int LASERS = 16;
   // ---
 

@@ -14,13 +14,13 @@ import ch.ethz.idsc.tensor.io.Primitives;
 import ch.ethz.idsc.tensor.sca.Cos;
 import ch.ethz.idsc.tensor.sca.Sin;
 
-public class Urg04lxSpacialProvider implements LidarSpacialProvider {
+public class Urg04lxSpacialProvider implements LidarSpacialProvider<LidarXYZEvent> {
   /* package */ static final double TO_METER = 0.001; // [mm] to [m]
   private static final float TO_METER_FLOAT = (float) TO_METER;
   /** recommended threshold points closer than 2[cm] == 0.02[m] are discarded */
   public static final double THRESHOLD = 0.02; // [m]
   // ---
-  private final List<LidarSpacialListener> listeners = new LinkedList<>();
+  private final List<LidarSpacialListener<LidarXYZEvent>> listeners = new LinkedList<>();
   // ---
   private final int dimensions;
   private final float[] dirx;
@@ -44,7 +44,7 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
   }
 
   @Override // from LidarSpacialProvider
-  public void addListener(LidarSpacialListener lidarSpacialListener) {
+  public void addListener(LidarSpacialListener<LidarXYZEvent> lidarSpacialListener) {
     listeners.add(lidarSpacialListener);
   }
 

@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.red.Min;
  * prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
 abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
-    LidarSpacialListener, GokartStatusListener {
+    LidarSpacialListener<LidarXYZEvent>, GokartStatusListener {
   private static final Scalar UNIT_SPEED = DoubleScalar.of(1);
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
