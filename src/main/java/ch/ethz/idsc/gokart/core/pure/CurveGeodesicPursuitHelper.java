@@ -13,12 +13,13 @@ import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuit;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
 import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.sophus.math.GeodesicInterface;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
 /* package */ enum CurveGeodesicPursuitHelper {
@@ -45,8 +46,8 @@ import ch.ethz.idsc.tensor.red.Norm;
       GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
       Tensor ratios = geodesicPursuit.ratios();
       if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
-        return Norm._2.ofVector(Extract2D.FUNCTION.apply(vector));
-      return RealScalar.of(Double.MAX_VALUE); // TODO GJOEL unitless?
+        return Quantity.of(Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)), SI.METER);
+      return Quantity.of(Double.MAX_VALUE, SI.METER); // infinite cost
     };
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
