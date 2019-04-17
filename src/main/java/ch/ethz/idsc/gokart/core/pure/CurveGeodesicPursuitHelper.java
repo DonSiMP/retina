@@ -16,6 +16,7 @@ import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.sophus.math.GeodesicInterface;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
@@ -47,7 +48,7 @@ import ch.ethz.idsc.tensor.red.Norm;
       Tensor ratios = geodesicPursuit.ratios();
       if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
         return Quantity.of(Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)), SI.METER);
-      return Quantity.of(Double.MAX_VALUE, SI.METER); // infinite cost
+      return Quantity.of(DoubleScalar.POSITIVE_INFINITY, SI.METER);
     };
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
