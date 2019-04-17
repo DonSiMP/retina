@@ -1,5 +1,5 @@
 // code by ynager and jph
-package ch.ethz.idsc.gokart.core.pure;
+package ch.ethz.idsc.demo.jg;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -19,6 +19,10 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.pure.CurveGeodesicPursuitModule;
+import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitModule;
+import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
@@ -52,7 +56,6 @@ import ch.ethz.idsc.owl.math.Lexicographic;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
@@ -72,6 +75,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.ArgMin;
@@ -81,7 +85,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
-public class GokartTrajectoryModule extends AbstractClockedModule {
+public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
   private static final VehicleModel STANDARD = RimoSinusIonModel.standard();
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
@@ -98,7 +102,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final FlowsInterface flowsInterface;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
+  final CurvePurePursuitModule pursuitModule = new CurveGeodesicPursuitModule(PursuitConfig.GLOBAL);
   private final AbstractMapping mapping = // SightLineMapping.defaultObstacle();
       GenericBayesianMapping.createObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
@@ -112,11 +116,11 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   /** arrives at 50[Hz] */
   private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
 
-  public GokartTrajectoryModule() {
+  public GokartGeodesicTrajectoryModule() {
     this(TrajectoryConfig.GLOBAL);
   }
 
-  /* package */ GokartTrajectoryModule(TrajectoryConfig trajectoryConfig) {
+  /* package */ GokartGeodesicTrajectoryModule(TrajectoryConfig trajectoryConfig) {
     this.trajectoryConfig = trajectoryConfig;
     flowsInterface = Se2CarFlows.forward(SPEED, Magnitude.PER_METER.apply(trajectoryConfig.maxRotation));
     this.waypoints = trajectoryConfig.getWaypoints();
@@ -154,12 +158,12 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     gokartPoseLcmClient.startSubscriptions();
     manualControlProvider.start();
     // ---
-    purePursuitModule.launch();
+    pursuitModule.launch();
   }
 
   @Override // from AbstractClockedModule
   protected void last() {
-    purePursuitModule.terminate();
+    pursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
     manualControlProvider.stop();
     // ---
@@ -239,7 +243,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       }
     }
     System.err.println("no curve because no pose");
-    purePursuitModule.setCurve(Optional.empty());
+    pursuitModule.setCurve(Optional.empty());
     PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }
 
@@ -275,9 +279,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       trajectory = Trajectories.glue(head, tail);
       Tensor curve = Tensor.of(trajectory.stream() //
           .map(TrajectorySample::stateTime) //
-          .map(StateTime::state) //
-          .map(Extract2D.FUNCTION));
-      purePursuitModule.setCurve(Optional.of(curve));
+          .map(StateTime::state));
+      if (Dimensions.of(curve).get(1) != 3)
+        System.err.println("WARN curve has dimensions " + Dimensions.of(curve));
+      pursuitModule.setCurve(Optional.of(curve));
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
       // failure to reach goal

@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.red.Norm;
    * @param geodesicInterface type of planned curve
    * @param trajectoryEntryFinder strategy to find best re-entry point
    * @param ratioLimits depending on pose and speed
-   * @return ratio rate unitless but with interpretation rad*m^-1 */
+   * @return ratio rate [rad*m^-1] */
   static Optional<Scalar> getRatio( //
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       GeodesicInterface geodesicInterface, //
@@ -45,14 +45,14 @@ import ch.ethz.idsc.tensor.red.Norm;
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
     Function<Tensor, Scalar> mapping = vector -> { //
       GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
-      Tensor ratios = geodesicPursuit.ratios();
+      Tensor ratios = geodesicPursuit.ratios().map(r -> Quantity.of(r, SI.PER_METER));
       if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
         return Quantity.of(Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)), SI.METER);
       return Quantity.of(DoubleScalar.POSITIVE_INFINITY, SI.METER);
     };
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
-    return lookAhead.map(vector -> new GeodesicPursuit(geodesicInterface, vector).firstRatio().orElse(null));
+    return lookAhead.map(vector -> new GeodesicPursuit(geodesicInterface, vector).firstRatio().map(r -> Quantity.of(r, SI.PER_METER)).orElse(null));
   }
 
   /** mirror the points along the y axis and invert their orientation

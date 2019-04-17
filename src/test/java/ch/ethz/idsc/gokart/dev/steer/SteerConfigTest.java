@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.dev.steer;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -48,8 +47,7 @@ public class SteerConfigTest extends TestCase {
 
   public void testTurningAtLimit() {
     // according to our model
-    Scalar ratio_unitless = Magnitude.PER_METER.apply(SteerConfig.GLOBAL.turningRatioMax);
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio_unitless);
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(SteerConfig.GLOBAL.turningRatioMax);
     // angle == 0.4521892315592385[rad]
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
     Scalar encoder = steerMapping.getSCEfromAngle(angle);
